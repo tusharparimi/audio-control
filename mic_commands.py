@@ -1,0 +1,134 @@
+import speech_recognition as sr
+import pyautogui
+import pygetwindow as gw
+import time
+
+def switch_to_youtube_tab():
+
+    print(gw.getWindowsWithTitle('Google Chrome'))
+    # Get the active Chrome window
+    chrome_windows = gw.getWindowsWithTitle('Google Chrome')
+
+    yt=0
+
+    for window in chrome_windows:
+        if yt==1:
+            break
+
+    # Activate the Chrome window
+        window.activate()
+
+    # Bring the Chrome window to the front
+       # window.maximize()
+
+    # Wait for Chrome to be in focus
+        time.sleep(1)
+
+    # Simulate Ctrl+Tab key press
+        pyautogui.hotkey('ctrl', 'tab')
+
+        tab_list=[]
+        
+        
+
+    # Loop until the YouTube tab is found
+        while True:
+            # Get the active tab's title
+            active_tab_title = gw.getActiveWindow().title
+            
+            print(active_tab_title)
+            if active_tab_title in tab_list:
+                break
+
+            tab_list.append(gw.getActiveWindow().title)
+
+            # Check if the YouTube tab is open
+            if 'YouTube' in active_tab_title:
+                yt=1
+                break
+
+            # Simulate Ctrl+Tab key press to switch to the next tab
+            pyautogui.hotkey('ctrl', 'tab')
+            time.sleep(0.5)  # Wait for the tab to switch (adjust if needed)
+
+        print("Switched to YouTube tab!")
+
+# Call the function to switch to the YouTube tab
+switch_to_youtube_tab()
+
+
+r = sr.Recognizer()
+#r.pause_threshold=0.2 #default 0.8
+#r.non_speaking_duration=0.1 #default 0.5
+#mic = sr.Microphone(device_index=1)
+mic = sr.Microphone()
+
+play_commands = ["play", "resume"]
+pause_commands = ["pause", "stop"]
+
+rewind_commands = ["rewind 10", "rewind 20", "rewind 30"]
+
+skip_commands = ["skip 10", "skip 20", "skip 30"]
+
+while True:
+    with mic as source:
+        print("Listening...")
+        r.adjust_for_ambient_noise(mic)
+        audio = r.listen(source)
+
+    try:
+        recognized_text = r.recognize_google(audio).lower()
+        print("Recognized:", recognized_text)
+
+        if recognized_text in play_commands:
+            # Perform play action
+            pyautogui.press("space")
+        elif recognized_text in pause_commands:
+            # Perform pause action
+            pyautogui.press("space")
+        elif recognized_text in rewind_commands:
+            # Perform rewind action
+            if "ten" in recognized_text:
+                pyautogui.press("left")
+                pyautogui.press("left")
+            elif "twenty" in recognized_text:
+                pyautogui.press("left")
+                pyautogui.press("left")
+                pyautogui.press("left")
+                pyautogui.press("left")
+            else:
+                pyautogui.press("left")
+                pyautogui.press("left")
+                pyautogui.press("left")
+                pyautogui.press("left")
+                pyautogui.press("left")
+                pyautogui.press("left")
+        elif recognized_text in skip_commands:
+            # Perform skip action
+            if "ten" in recognized_text:
+                pyautogui.press("right")
+                pyautogui.press("right")
+            elif "twenty" in recognized_text:
+                pyautogui.press("right")
+                pyautogui.press("right")
+                pyautogui.press("right")
+                pyautogui.press("right")
+            else:
+                pyautogui.press("right")
+                pyautogui.press("right")
+                pyautogui.press("right")
+                pyautogui.press("right")
+                pyautogui.press("right")
+                pyautogui.press("right")
+                
+        else:
+            # Handle unrecognized commands
+            print("Command not recognized.")
+
+    except sr.UnknownValueError:
+        print("Could not understand audio.")
+    except sr.RequestError as e:
+        print("Speech recognition service error:", str(e))
+
+
+
