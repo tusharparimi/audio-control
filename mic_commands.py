@@ -58,17 +58,17 @@ switch_to_youtube_tab()
 
 
 r = sr.Recognizer()
-#r.pause_threshold=0.2 #default 0.8
-#r.non_speaking_duration=0.1 #default 0.5
-#mic = sr.Microphone(device_index=1)
-mic = sr.Microphone()
+r.phrase_threshold=0.1
+r.pause_threshold=0.5 #default 0.8
+r.non_speaking_duration=0.1 #default 0.5
+mic = sr.Microphone(device_index=1)
+#mic = sr.Microphone()
 
 play_commands = ["play", "resume"]
 pause_commands = ["pause", "stop"]
-
 rewind_commands = ["rewind 10", "rewind 20", "rewind 30"]
-
 skip_commands = ["skip 10", "skip 20", "skip 30"]
+vol_commands = ["volume up", "volume down"]
 
 while True:
     with mic as source:
@@ -82,43 +82,22 @@ while True:
 
         if recognized_text in play_commands:
             # Perform play action
-            pyautogui.press("space")
+            pyautogui.press("playpause")
         elif recognized_text in pause_commands:
             # Perform pause action
-            pyautogui.press("space")
+            pyautogui.press("playpause")
+        elif recognized_text in vol_commands:
+            if recognized_text[-2:]=="up":
+                pyautogui.press("volumeup")
+            else:
+                pyautogui.press("volumedown")    
         elif recognized_text in rewind_commands:
             # Perform rewind action
-            if "ten" in recognized_text:
-                pyautogui.press("left")
-                pyautogui.press("left")
-            elif "twenty" in recognized_text:
-                pyautogui.press("left")
-                pyautogui.press("left")
-                pyautogui.press("left")
-                pyautogui.press("left")
-            else:
-                pyautogui.press("left")
-                pyautogui.press("left")
-                pyautogui.press("left")
-                pyautogui.press("left")
-                pyautogui.press("left")
+            for i in range(int(recognized_text[-2:])//5):
                 pyautogui.press("left")
         elif recognized_text in skip_commands:
             # Perform skip action
-            if "ten" in recognized_text:
-                pyautogui.press("right")
-                pyautogui.press("right")
-            elif "twenty" in recognized_text:
-                pyautogui.press("right")
-                pyautogui.press("right")
-                pyautogui.press("right")
-                pyautogui.press("right")
-            else:
-                pyautogui.press("right")
-                pyautogui.press("right")
-                pyautogui.press("right")
-                pyautogui.press("right")
-                pyautogui.press("right")
+            for i in range(int(recognized_text[-2:])//5):
                 pyautogui.press("right")
                 
         else:
