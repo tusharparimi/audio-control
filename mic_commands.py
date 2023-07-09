@@ -71,14 +71,17 @@ skip_commands = ["skip 10", "skip 20", "skip 30"]
 vol_commands = ["volume up", "volume down"]
 
 while True:
+    start=time.time()
     with mic as source:
         print("Listening...")
         r.adjust_for_ambient_noise(mic)
-        audio = r.listen(source)
+        audio = r.listen(source, phrase_time_limit=2)
 
     try:
         recognized_text = r.recognize_google(audio).lower()
         print("Recognized:", recognized_text)
+        end=time.time()
+        print(end-start)
 
         if recognized_text in play_commands:
             # Perform play action
@@ -106,6 +109,8 @@ while True:
 
     except sr.UnknownValueError:
         print("Could not understand audio.")
+        end1=time.time()
+        print(end1-start)
     except sr.RequestError as e:
         print("Speech recognition service error:", str(e))
 
